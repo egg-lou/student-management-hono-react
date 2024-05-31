@@ -9,5 +9,4 @@ export const professorSchema = z.object({
 
 export const addProfessorSchema = professorSchema.omit({ id: true })
 
-
 export type Professor = z.infer<typeof professorSchema>

@@ -1,3 +1,4 @@
 # deps
 node_modules/
 /bun.lockb
+/client/bun.lockb

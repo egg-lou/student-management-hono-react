@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import './App.css'
+import { ProfessorService } from '@/services/Professor.ts'
 
 function App() {
     const fetchProfessors = async () => {
         try {
-            const response = await fetch(
-                'http://localhost:3000/api/professors',
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            )
-            const data = await response.json()
-            console.log(data)
+            const professorService = new ProfessorService()
+            const response = await professorService.getProfessors()
+            console.log(response)
         } catch (error) {
             console.error(error)
         }
