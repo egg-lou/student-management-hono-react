@@ -13,6 +13,6 @@ export const updateProfessorSchema = z.object({
     name: z.string().optional(),
     email: z.string().email().optional(),
     department: z.string().optional(),
-});
+})
 
 export type Professor = z.infer<typeof professorSchema>
