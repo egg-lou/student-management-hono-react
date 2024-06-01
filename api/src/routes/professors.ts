@@ -36,6 +36,7 @@ export const professorsRoute = new Hono()
     })
     .post('/', zValidator('json', addProfessorSchema), async (c: Context) => {
         try {
+            // @ts-ignore
             const professorData: Professor = c.req.valid('json')
             const professor = await prisma.professor.create({
                 data: professorData
@@ -51,6 +52,7 @@ export const professorsRoute = new Hono()
     .put('/:id{[a-fA-F0-9\-]+}', zValidator('json', updateProfessorSchema), async (c: Context) => {
         try {
             const id = c.req.param('id')
+            // @ts-ignore
             const professorData: Professor = c.req.valid('json')
             const professor = await prisma.professor.update({
                 where: {id},
