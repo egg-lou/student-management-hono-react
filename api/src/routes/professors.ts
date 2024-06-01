@@ -12,9 +12,42 @@ const prisma = new PrismaClient()
 export const professorsRoute = new Hono()
     .get('/', async (c: Context) => {
         try {
-            const professors = await prisma.professor.findMany()
-            return c.json({ message: 'Professors: ', professors }, 200)
+            const page = Number(c.req.query('page')) || 1
+            const limit = Number(c.req.query('limit')) || 10
+            const searchValue = c.req.query('search')
+
+            const skip = (page - 1) * limit
+            const take = limit
+
+            let where = {}
+
+            if (searchValue) {
+                where = {
+                    name: {
+                        contains: searchValue.toLowerCase(),
+                    },
+                }
+            }
+
+            const professors = await prisma.professor.findMany({
+                skip,
+                take,
+                where,
+            })
+
+            // @ts-ignore
+            const filteredProfessors = professors.filter((professor) => {
+                return professor.name
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase())
+            })
+
+            return c.json(
+                { message: 'Professors: ', professors: filteredProfessors },
+                200
+            )
         } catch (error) {
+            console.log('error', error)
             return c.json({ message: 'An error occurred!', error }, 500)
         }
     })
