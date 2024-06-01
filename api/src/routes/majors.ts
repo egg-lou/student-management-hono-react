@@ -1,15 +1,11 @@
 import { Context, Hono } from 'hono'
-import {
-    Professor,
-    addProfessorSchema,
-    updateProfessorSchema,
-} from '../schemas/professor'
-import { zValidator } from '@hono/zod-validator'
 import { PrismaClient } from '@prisma/client'
+import { zValidator } from '@hono/zod-validator'
+import { addMajorSchema, Major, updateMajorSchema } from '../schemas/major'
 
 const prisma = new PrismaClient()
 
-export const professorsRoute = new Hono()
+export const majorsRoute = new Hono()
     .get('/', async (c: Context) => {
         try {
             const page = Number(c.req.query('page')) || 1
@@ -29,20 +25,19 @@ export const professorsRoute = new Hono()
                 }
             }
 
-            const professors = await prisma.professor.findMany({
+            const majors = await prisma.major.findMany({
                 skip,
                 take,
                 where,
             })
 
-            const filteredProfessors = professors.filter((professor) => {
+            const filteredMajors = majors.filter((major) => {
                 // @ts-ignore
-                return professor.name
+                return major.name
                     .toLowerCase()
                     .includes(searchValue.toLowerCase())
             })
-
-            return c.json({ professors: filteredProfessors }, 200)
+            return c.json({ majors: filteredMajors }, 200)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)
         }
@@ -50,48 +45,40 @@ export const professorsRoute = new Hono()
     .get('/:id{[a-fA-F0-9-]+}', async (c: Context) => {
         try {
             const id = c.req.param('id')
-            const professor = await prisma.professor.findUnique({
+            const major = await prisma.major.findUnique({
                 where: { id },
             })
-            if (!professor) {
-                return c.json({ message: 'Professor not found!' }, 404)
+            if (!major) {
+                return c.json({ message: 'Major not found!' }, 404)
             }
-            return c.json({ message: 'Professor: ', professor }, 200)
+            return c.json({ major: major }, 200)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)
         }
     })
-    .post('/', zValidator('json', addProfessorSchema), async (c: Context) => {
+    .post('/', zValidator('json', addMajorSchema), async (c: Context) => {
         try {
             // @ts-ignore
-            const professorData: Professor = c.req.valid('json')
-            const professor = await prisma.professor.create({
-                data: professorData,
-            })
-            return c.json(
-                { message: 'Professor added successfully!', professor },
-                201
-            )
+            const majorData: Major = c.req.valid('json')
+            const major = await prisma.major.create({ data: majorData })
+            return c.json({ message: 'Major added!', major }, 201)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)
         }
     })
     .put(
         '/:id{[a-fA-F0-9-]+}',
-        zValidator('json', updateProfessorSchema),
+        zValidator('json', updateMajorSchema),
         async (c: Context) => {
             try {
                 const id = c.req.param('id')
                 // @ts-ignore
-                const professorData: Professor = c.req.valid('json')
-                const professor = await prisma.professor.update({
+                const majorData: Major = c.req.valid('json')
+                const major = await prisma.major.update({
                     where: { id },
-                    data: professorData,
+                    data: majorData,
                 })
-                return c.json(
-                    { message: 'Professor updated successfully!', professor },
-                    200
-                )
+                return c.json({ message: 'Major updated!', major }, 200)
             } catch (error) {
                 return c.json({ message: 'An error occurred!', error }, 500)
             }
@@ -100,8 +87,10 @@ export const professorsRoute = new Hono()
     .delete('/:id{[a-fA-F0-9-]+}', async (c: Context) => {
         try {
             const id = c.req.param('id')
-            await prisma.professor.delete({ where: { id } })
-            return c.json({ message: 'Professor deleted successfully!' }, 200)
+            await prisma.major.delete({
+                where: { id },
+            })
+            return c.json({ message: 'Major deleted!' }, 200)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)
         }
