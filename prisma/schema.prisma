@@ -30,7 +30,8 @@ model Major {
 model Student {
   id            String   @id @default(uuid())
   name          String
-  campusAddress String
+  campus Campus @relation(fields: [campusId], references: [id])
+  campusId      String
   major         Major   @relation(fields: [majorId], references: [id])
   majorId       String
   GradeYear     GradeYear[]
@@ -42,6 +43,13 @@ model Course {
   professor   Professor @relation(fields: [professorId], references: [id])
   professorId String
   GradeYear   GradeYear[]
+}
+
+model Campus {
+  id     String  @id @default(uuid())
+  name   String
+  address String
+  Student Student[]
 }
 
 model GradeYear {

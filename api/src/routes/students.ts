@@ -23,28 +23,22 @@ export const studentsRoute = new Hono()
             let where = {}
 
             if (searchValue) {
-                where = {
-                    name: {
-                        contains: searchValue.toLowerCase(),
-                    },
+                where.name = {
+                    contains: searchValue.toLowerCase(),
                 }
+            }
 
-                if (majorId) {
-                    where = {
-                        AND: [
-                            where,
-                            {
-                                majorId,
-                            },
-                        ],
-                    }
-                }
+            if (majorId) {
+                where.majorId = majorId
             }
 
             const students = await prisma.student.findMany({
                 skip,
                 take,
                 where,
+                include: {
+                    major: true, // Include the major details
+                },
             })
 
             const filteredStudents = students.filter((student) => {
