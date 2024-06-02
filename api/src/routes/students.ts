@@ -71,5 +71,26 @@ export const studentsRoute = new Hono()
 .post('/', zValidator('json', addStudentSchema), async (c: Context) => {
     try {
         // @ts-ignore
+        const studentData: Student = c.req.valid('json')
+        const student = await prisma.student.create({
+            data: studentData
+        })
+        return c.json({ message: 'Student added!', student }, 201)
+    } catch (error) {
+        return c.json({ message: 'An error occurred!', error }, 500)
+    }
+})
+.put('/:id{[a-fA-F0-9-]+}', zValidator('json', updateStudentSchema), async (c: Context) => {
+    try {
+        const id = c.req.param('id')
+        // @ts-ignore
+        const studentData: Student = c.req.valid('json')
+        const student = await prisma.student.update({
+            where: { id },
+            data: studentData
+        })
+        return c.json({ message: 'Student updated!', student }, 200)
+    } catch (error) {
+        return c.json({ message: 'An error occurred!', error }, 500)
     }
 })
