@@ -7,8 +7,8 @@ export const studentSchema = z.object({
     majorId: z.string().uuid(),
 })
 
-const addStudentSchema = studentSchema.omit({ id: true})
-const updateStudentSchema = z.object({
+export const addStudentSchema = studentSchema.omit({ id: true})
+export const updateStudentSchema = z.object({
     name: z.string().optional(),
     campusAddress: z.string().optional(),
     majorId: z.string().uuid().optional(),
