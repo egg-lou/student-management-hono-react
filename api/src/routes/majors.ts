@@ -78,6 +78,9 @@ export const majorsRoute = new Hono()
                     where: { id },
                     data: majorData,
                 })
+                if (!major) {
+                    return c.json({ message: 'Major not found!' }, 404)
+                }
                 return c.json({ message: 'Major updated!', major }, 200)
             } catch (error) {
                 return c.json({ message: 'An error occurred!', error }, 500)
@@ -90,6 +93,9 @@ export const majorsRoute = new Hono()
             await prisma.major.delete({
                 where: { id },
             })
+            if (!id) {
+                return c.json({ message: 'Major not found!' }, 404)
+            }
             return c.json({ message: 'Major deleted!' }, 200)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)

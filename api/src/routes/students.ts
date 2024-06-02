@@ -89,8 +89,25 @@ export const studentsRoute = new Hono()
             where: { id },
             data: studentData
         })
+        if (!student) {
+            return c.json({ message: 'Student not found!' }, 404)
+        }
         return c.json({ message: 'Student updated!', student }, 200)
     } catch (error) {
         return c.json({ message: 'An error occurred!', error }, 500)
     }
 })
+    .delete('/:id{[a-fA-F0-9-]+}', async (c: Context) => {
+        try {
+            const id = c.req.param('id')
+            await prisma.student.delete({
+                where: { id }
+            })
+            if (!id) {
+                return c.json({ message: 'Student not found!' }, 404)
+            }
+            return c.json({ message: 'Student deleted!' }, 200)
+        } catch (error) {
+            return c.json({ message: 'An error occurred!', error }, 500)
+        }
+    })
