@@ -8,8 +8,26 @@ const prisma = new PrismaClient()
 export const campusRoute = new Hono()
     .get('/', async (c: Context) => {
         try {
-            const campus = await prisma.campus.findMany()
-            return c.json(campus)
+            const searchValue = c.req.query('search')
+
+            let where = {}
+
+            if (searchValue) {
+                where = {
+                    name: {
+                        contains: searchValue.toLowerCase(),
+                    },
+                }
+            }
+            const campus = await prisma.campus.findMany( {
+                where
+            })
+            const filteredCampus = campus.filter((campus) => {
+                return campus.name
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase())
+            })
+            return c.json({ campus: filteredCampus }, 200)
         } catch (error) {
             return c.json({ message: 'An error occurred!', error }, 500)
         }

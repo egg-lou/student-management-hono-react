@@ -4,6 +4,7 @@ import { professorsRoute } from './routes/professors'
 import { cors } from 'hono/cors'
 import { majorsRoute } from './routes/majors'
 import { studentsRoute } from './routes/students'
+import {campusRoute} from "./routes/campus";
 
 const app = new Hono()
 
@@ -16,6 +17,7 @@ app.get('/', async (c: Context): Promise<any> => {
 app.route('/api/professors', professorsRoute)
 app.route('/api/majors', majorsRoute)
 app.route('/api/students', studentsRoute)
+app.route('/api/campus', campusRoute)
 
 export default {
     port: 3000,
