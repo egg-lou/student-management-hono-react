@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Context, Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
-import {addCampusSchema, updateCampusSchema} from '../schemas/campus'
+import { addCampusSchema, updateCampusSchema } from '../schemas/campus'
 
 const prisma = new PrismaClient()
 
@@ -32,7 +32,7 @@ export const campusRoute = new Hono()
             return c.json({ message: 'An error occurred!', error }, 500)
         }
     })
-    .get('/id{[a-fA-F0-9-]+}', async (c: Context) => {
+    .get('/:id{[a-fA-F0-9-]+}', async (c: Context) => {
         try {
             const id = c.req.param('id')
             const campus = await prisma.campus.findUnique({
@@ -59,7 +59,7 @@ export const campusRoute = new Hono()
         }
     })
     .put(
-        '/id{[a-fA-F0-9-]+}',
+        '/:id{[a-fA-F0-9-]+}',
         zValidator('json', updateCampusSchema),
         async (c: Context) => {
             try {
@@ -79,7 +79,7 @@ export const campusRoute = new Hono()
             }
         }
     )
-    .delete('/id{[a-fA-F0-9-]+}', async (c: Context) => {
+    .delete('/:id{[a-fA-F0-9-]+}', async (c: Context) => {
         try {
             const id = c.req.param('id')
             await prisma.campus.delete({
