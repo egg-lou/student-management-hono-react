@@ -4,7 +4,7 @@ import { professorsRoute } from './routes/professors'
 import { cors } from 'hono/cors'
 import { majorsRoute } from './routes/majors'
 import { studentsRoute } from './routes/students'
-import {campusRoute} from "./routes/campus";
+import { campusRoute } from './routes/campus'
 
 const app = new Hono()
 

@@ -19,8 +19,8 @@ export const campusRoute = new Hono()
                     },
                 }
             }
-            const campus = await prisma.campus.findMany( {
-                where
+            const campus = await prisma.campus.findMany({
+                where,
             })
             const filteredCampus = campus.filter((campus) => {
                 return campus.name
