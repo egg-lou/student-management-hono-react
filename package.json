@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "dev": "bun run --hot api/src/app.ts"
+        "dev": "bun run --hot api/src/app.ts",
+        "format": "prettier --write ."
     },
     "dependencies": {
         "@hono/zod-validator": "^0.2.1",
